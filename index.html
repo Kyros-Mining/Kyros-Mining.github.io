@@ -444,7 +444,7 @@ a.cc-value:hover{color:var(--orange-dk)}
     <nav class="main-nav" id="mainNav">
       <a href="#angebot" data-i18n="nav.offers">Angebot</a>
       <a href="#energie" data-i18n="nav.energie">Energie</a>
-      <a href="#prozess" data-i18n="nav.process">Ablauf</a>
+      <a href="#projekte" data-i18n="nav.projekte">Projekte</a>
       <a href="#hardware" data-i18n="nav.hardware">Hardware</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
       <a href="#kontakt" data-i18n="nav.contact">Kontakt</a>
@@ -1435,7 +1435,7 @@ a.cc-value:hover{color:var(--orange-dk)}
     <div class="footer-links">
       <a href="#angebot" data-i18n="nav.offers">Angebot</a>
       <a href="#energie" data-i18n="nav.energie">Energie</a>
-      <a href="#prozess" data-i18n="nav.process">Ablauf</a>
+      <a href="#projekte" data-i18n="nav.projekte">Projekte</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
       <a href="#kontakt" data-i18n="nav.contact">Kontakt</a>
     </div>
@@ -1450,7 +1450,7 @@ const i18n = {
   de: {
     "meta.title": "Kyros Mining | Krypto-Mining, Energieflexibilität & Netzstabilisierung",
     "meta.desc": "Kyros Mining: ASIC-Hosting (30 kW sofort verfügbar), Energie-Partnerschaften für PV, Wasserkraft, Wind und Biogas, Demand-Response und Investment.",
-    "nav.offers":"Angebot","nav.energie":"Energie","nav.process":"Ablauf","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Kontakt","nav.cta":"Kontakt",
+    "nav.offers":"Angebot","nav.energie":"Energie","nav.projekte":"Projekte","nav.process":"Ablauf","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Kontakt","nav.cta":"Kontakt",
     "float.label":"30 kW verfügbar","float.cta":"Jetzt sichern",
     "hero.eyebrow":"NETZFREQUENZ-SYNCHRONES MINING",
     "hero.title1":"","hero.title2":"IM EINKLANG","hero.title3":"MIT DEM NETZ",
@@ -1540,7 +1540,7 @@ const i18n = {
     "faq.q7.q":"Welches Service-Level garantiert Kyros?","faq.q7.a":"Standard: 98 % Anlagenverfügbarkeit, definierte Reaktionszeiten bei Störungen. Höhere SLA-Stufen verfügbar.",
     "contact.eyebrow":"KONTAKT","contact.title":"Lassen Sie uns sprechen.","contact.lead":"Wählen Sie den passenden Einstieg — wir antworten innerhalb von zwei Werktagen.",
     "contact.tab.hosting":"Hosting","contact.tab.energy":"Energy Flexibility","contact.tab.invest":"Investment","contact.tab.hardware":"Hardware-Verkauf",
-    "contact.email":"E-Mail","contact.phone":,"contact.location":"Standort",
+    "contact.email":"E-Mail","contact.phone":"Telefon","contact.location":"Standort",
     "contact.form.name":"Name","contact.form.email":"E-Mail","contact.form.message":"Nachricht","contact.form.submit":"Anfrage senden","contact.form.success":"Danke! Ihre Anfrage wurde übermittelt.",
     "contact.hosting.title":"Hosting-Anfrage","contact.hosting.text":"Erzählen Sie uns von Ihrer Hardware-Menge — wir melden uns mit Standort und Preisvorschlag. Aktuell 30 kW sofort verfügbar. 350 kW Gesamtkapazität.","contact.hosting.formq":"Anzahl Geräte / Leistungsbedarf",
     "contact.energy.title":"Energie-Partnerschaft","contact.energy.text":"Netzbetreiber, Erzeuger oder Energieversorger: Beschreiben Sie Ihre Anlage und Ihren Bedarf.","contact.energy.formq":"Anlagentyp & Region",
@@ -1552,7 +1552,7 @@ const i18n = {
   en: {
     "meta.title":"Kyros Mining | Crypto Mining, Energy Flexibility & Grid Stabilization",
     "meta.desc":"Kyros Mining: ASIC hosting (30 kW available now), energy partnerships for PV, hydro, wind and biogas, demand response and investment.",
-    "nav.offers":"Offering","nav.energie":"Energy","nav.process":"Process","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Contact","nav.cta":"Contact",
+    "nav.offers":"Offering","nav.energie":"Energy","nav.projekte":"Projects","nav.process":"Process","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Contact","nav.cta":"Contact",
     "float.label":"30 kW available","float.cta":"Reserve now",
     "hero.eyebrow":"GRID-SYNCHRONOUS MINING",
     "hero.title1":"","hero.title2":"IN HARMONY","hero.title3":"WITH THE GRID",
@@ -1717,7 +1717,9 @@ window.addEventListener('scroll', () => {
 // floating CTA link
 floatingCta.querySelector('a').addEventListener('click', (e) => {
   e.preventDefault();
-  setActiveContactPanel('kontakt-hosting');
+  if (typeof window.setActivePanel === 'function') {
+    window.setActivePanel('kontakt-hosting');
+  }
   document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
@@ -1854,41 +1856,163 @@ document.querySelectorAll('.energie-expand').forEach(btn => {
 });
 
 /* ===================================================
-   Contact tabs
+   Contact tabs — TAB SWITCHING FIX
    =================================================== */
-const contactTabButtons = document.querySelectorAll('.contact-tab');
-const contactPanels = document.querySelectorAll('.contact-panel');
-
-function setActiveContactPanel(targetId) {
-  contactTabButtons.forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-target') === targetId));
-  contactPanels.forEach(panel => panel.classList.toggle('active', panel.id === targetId));
-}
-
-contactTabButtons.forEach(btn => btn.addEventListener('click', () => setActiveContactPanel(btn.getAttribute('data-target'))));
-
-document.querySelectorAll('a[href^="#kontakt-"]').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const targetId = link.getAttribute('href').slice(1);
-    setActiveContactPanel(targetId);
-    document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
-
 (function() {
-  const hash = window.location.hash.replace('#', '');
-  if (hash.startsWith('kontakt-')) setActiveContactPanel(hash);
+  var tabButtons = document.querySelectorAll('.contact-tab');
+  var panels = document.querySelectorAll('.contact-panel');
+
+  function setActivePanel(targetId) {
+    tabButtons.forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-target') === targetId);
+    });
+    panels.forEach(function(panel) {
+      panel.classList.toggle('active', panel.id === targetId);
+    });
+  }
+  window.setActivePanel = setActivePanel;
+
+  tabButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      setActivePanel(btn.getAttribute('data-target'));
+    });
+  });
+
+  document.querySelectorAll('a[href^="#kontakt-"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = link.getAttribute('href').slice(1);
+      setActivePanel(targetId);
+      var el = document.getElementById('kontakt');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  var hash = window.location.hash.replace('#', '');
+  if (hash.indexOf('kontakt-') === 0) setActivePanel(hash);
 })();
 
 /* ===================================================
-   FAQ accordion
+   FAQ accordion — FIX
    =================================================== */
-document.querySelectorAll('.faq-item').forEach(item => {
-  item.querySelector('.faq-question').addEventListener('click', () => {
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(o => { if (o !== item) { o.classList.remove('open'); o.querySelector('.faq-question').setAttribute('aria-expanded', 'false'); } });
+document.querySelectorAll('.faq-item').forEach(function(item) {
+  var btn = item.querySelector('.faq-question');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    var isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function(o) {
+      if (o !== item) {
+        o.classList.remove('open');
+        var ob = o.querySelector('.faq-question');
+        if (ob) ob.setAttribute('aria-expanded', 'false');
+      }
+    });
     item.classList.toggle('open', !isOpen);
-    item.querySelector('.faq-question').setAttribute('aria-expanded', String(!isOpen));
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  });
+});
+
+/* ===================================================
+   Energie card expand — FIX
+   =================================================== */
+document.querySelectorAll('.energie-expand').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var targetId = btn.getAttribute('data-target');
+    var details = document.getElementById(targetId);
+    var isOpen = details && details.classList.contains('open');
+
+    // close all
+    document.querySelectorAll('.energie-details').forEach(function(d) { d.classList.remove('open'); });
+    document.querySelectorAll('.energie-expand').forEach(function(b) {
+      b.classList.remove('open');
+      var sp = b.querySelector('span[data-i18n]');
+      if (sp) sp.textContent = i18n[currentLang]['energie.expand'] || 'Details einblenden';
+    });
+
+    if (!isOpen && details) {
+      details.classList.add('open');
+      btn.classList.add('open');
+      var span = btn.querySelector('span[data-i18n]');
+      if (span) span.textContent = currentLang === 'de' ? 'Details ausblenden' : 'Hide details';
+    }
+  });
+});
+
+/* ===================================================
+   Mining calculator — FIX
+   =================================================== */
+(function() {
+  var calcPower = document.getElementById('calcPower');
+  var calcPowerVal = document.getElementById('calcPowerVal');
+  var calcAuslastungEl = document.getElementById('calcAuslastung');
+  var calcDevicesEl = document.getElementById('calcDevices');
+  var calcEarningsEl = document.getElementById('calcEarnings');
+  var devicePills = document.querySelectorAll('.device-pill');
+
+  var selectedWatt = 3510;
+  var selectedTH = 234;
+
+  function updateCalc() {
+    var kw = parseInt(calcPower ? calcPower.value : 10);
+    if (calcPowerVal) calcPowerVal.textContent = kw;
+    var watts = kw * 1000;
+    var devices = Math.max(1, Math.floor(watts / selectedWatt));
+    var loadTH = devices * selectedTH;
+    var networkTH = 930e6;
+    var monthlyBTC = (loadTH / networkTH) * 450 * 30;
+    var monthlyEUR = monthlyBTC * 90000;
+    if (calcAuslastungEl) calcAuslastungEl.textContent = loadTH >= 1000 ? (loadTH / 1000).toFixed(1) + ' PH/s' : loadTH.toFixed(0) + ' TH/s';
+    if (calcDevicesEl) calcDevicesEl.textContent = devices + ' Geräte';
+    if (calcEarningsEl) calcEarningsEl.textContent = monthlyEUR >= 1000 ? '~' + (monthlyEUR / 1000).toFixed(1) + 'k €' : '~' + monthlyEUR.toFixed(0) + ' €';
+  }
+
+  if (calcPower) calcPower.addEventListener('input', updateCalc);
+
+  devicePills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      devicePills.forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      selectedWatt = parseInt(pill.getAttribute('data-watt'));
+      selectedTH = parseInt(pill.getAttribute('data-th'));
+      updateCalc();
+    });
+  });
+
+  updateCalc();
+})();
+
+/* ===================================================
+   Contact forms — mailto fallback (funktioniert ohne Server)
+   =================================================== */
+document.querySelectorAll('.contact-form').forEach(function(form) {
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var btn = form.querySelector('button[type="submit"]');
+    var s = form.querySelector('.form-success');
+    var formType = form.getAttribute('data-form') || 'anfrage';
+
+    var name = (form.querySelector('[name="name"]') || {}).value || '';
+    var email = (form.querySelector('[name="email"]') || {}).value || '';
+    var message = (form.querySelector('[name="message"]') || {}).value || '';
+    // catch any extra select/input (capacity, region, volume, hardware model etc.)
+    var extras = [];
+    form.querySelectorAll('select, input:not([name="name"]):not([name="email"]), textarea:not([name="message"])').forEach(function(el) {
+      if (el.value) extras.push((el.getAttribute('placeholder') || el.name || el.id || 'Info') + ': ' + el.value);
+    });
+
+    var subject = encodeURIComponent('[Kyros Mining] ' + formType.charAt(0).toUpperCase() + formType.slice(1) + '-Anfrage' + (name ? ' von ' + name : ''));
+    var body = encodeURIComponent(
+      'Name: ' + name + '\n' +
+      'E-Mail: ' + email + '\n' +
+      'Formular: ' + formType + '\n' +
+      (extras.length ? extras.join('\n') + '\n' : '') +
+      (message ? '\nNachricht:\n' + message : '')
+    );
+
+    window.location.href = 'mailto:euasichosting@gmail.com?subject=' + subject + '&body=' + body;
+
+    if (s) { s.classList.add('visible'); setTimeout(function() { s.classList.remove('visible'); }, 6000); }
+    setTimeout(function() { form.reset(); }, 300);
   });
 });
 
@@ -1896,40 +2020,42 @@ document.querySelectorAll('.faq-item').forEach(item => {
    Reveal on scroll
    =================================================== */
 try {
-  const revEls = Array.prototype.slice.call(document.querySelectorAll(
+  var revEls = Array.prototype.slice.call(document.querySelectorAll(
     '.section-eyebrow,.section-title,.section-lead,.offer-cards,.energie-grid,.energie-cta-panel,.calculator,.capacity-inner,.process-steps,.hardware-text,.faq-list,.contact-tabs,.contact-panels'
   ));
-  revEls.forEach(el => el.classList.add('reveal'));
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.1 });
-  revEls.forEach(el => io.observe(el));
-} catch(e) { document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible')); }
+  revEls.forEach(function(el) { el.classList.add('reveal'); });
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); io.unobserve(entry.target); }
+    });
+  }, { threshold: 0.08 });
+  revEls.forEach(function(el) { io.observe(el); });
+} catch(e) { document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); }); }
 
 /* ===================================================
    Counter animation
    =================================================== */
-const counters = document.querySelectorAll('[data-counter]');
-let countersStarted = false;
+var counters = document.querySelectorAll('[data-counter]');
+var countersStarted = false;
 function startCounters() {
   if (countersStarted) return; countersStarted = true;
-  counters.forEach(el => {
-    const target = parseFloat(el.getAttribute('data-counter'));
-    const start = performance.now();
-    const dur = 1600;
+  counters.forEach(function(el) {
+    var target = parseFloat(el.getAttribute('data-counter'));
+    var start = performance.now();
+    var dur = 1600;
     (function tick(now) {
-      const p = Math.min((now - start) / dur, 1);
-      const v = target * (1 - Math.pow(1 - p, 3));
+      var p = Math.min((now - start) / dur, 1);
+      var v = target * (1 - Math.pow(1 - p, 3));
       el.textContent = target % 1 === 0 ? Math.round(v) : v.toFixed(1);
       if (p < 1) requestAnimationFrame(tick);
     })(start);
   });
 }
 try {
-  const sio = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { startCounters(); sio.disconnect(); } });
+  var sio = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { startCounters(); sio.disconnect(); } });
   }, { threshold: 0.3 });
-  const hs = document.querySelector('.hero-stats');
+  var hs = document.querySelector('.hero-stats');
   if (hs) sio.observe(hs);
 } catch(e) { startCounters(); }
 
@@ -1937,10 +2063,10 @@ try {
    Hero canvas: animated load curves
    =================================================== */
 (function() {
-  const canvas = document.getElementById('loadCurve');
+  var canvas = document.getElementById('loadCurve');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let w, h, dpr;
+  var ctx = canvas.getContext('2d');
+  var w, h, dpr;
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     w = canvas.clientWidth; h = canvas.clientHeight;
@@ -1949,18 +2075,18 @@ try {
   }
   resize();
   window.addEventListener('resize', resize);
-  const lines = [
+  var lines = [
     { amp:.06, freq:.004, speed:.0006, phase:0, yR:.7, col:'rgba(217,105,15,0.22)', w:1.5 },
     { amp:.04, freq:.006, speed:.0009, phase:2, yR:.8, col:'rgba(217,105,15,0.12)', w:1 },
     { amp:.03, freq:.003, speed:.0004, phase:4, yR:.88, col:'rgba(217,105,15,0.07)', w:1 }
   ];
-  const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   function draw(t) {
     ctx.clearRect(0, 0, w, h);
-    lines.forEach(l => {
+    lines.forEach(function(l) {
       ctx.beginPath();
-      for (let x = 0; x <= w; x += 4) {
-        const y = h * l.yR + Math.sin(x * l.freq + t * l.speed + l.phase) * h * l.amp + Math.sin(x * l.freq * 2.3 + t * l.speed * 1.4) * h * l.amp * 0.3;
+      for (var x = 0; x <= w; x += 4) {
+        var y = h * l.yR + Math.sin(x * l.freq + t * l.speed + l.phase) * h * l.amp + Math.sin(x * l.freq * 2.3 + t * l.speed * 1.4) * h * l.amp * 0.3;
         x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
       ctx.strokeStyle = l.col; ctx.lineWidth = l.w; ctx.stroke();
@@ -1974,51 +2100,39 @@ try {
    Grid section canvas: node network
    =================================================== */
 (function() {
-  const canvas = document.getElementById('gridCanvas');
+  var canvas = document.getElementById('gridCanvas');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let w, h, dpr, nodes = [];
+  var ctx = canvas.getContext('2d');
+  var w, h, dpr, nodes = [];
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     w = canvas.clientWidth; h = canvas.clientHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     nodes = [];
-    const cols = Math.max(4, Math.floor(w / 130));
-    const rows = Math.max(3, Math.floor(h / 130));
-    for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+    var cols = Math.max(4, Math.floor(w / 130));
+    var rows = Math.max(3, Math.floor(h / 130));
+    for (var i = 0; i < cols; i++) for (var j = 0; j < rows; j++) {
       nodes.push({ x: (i + 0.5) * (w / cols) + (Math.random() - 0.5) * 35, y: (j + 0.5) * (h / rows) + (Math.random() - 0.5) * 35, phase: Math.random() * Math.PI * 2, speed: 0.0006 + Math.random() * 0.0007 });
     }
   }
   resize(); window.addEventListener('resize', resize);
-  const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   function draw(t) {
     ctx.clearRect(0, 0, w, h);
-    for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
-      const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-      if (d < 160) { ctx.strokeStyle = `rgba(217,105,15,${(1-d/160)*0.09})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke(); }
+    for (var i = 0; i < nodes.length; i++) for (var j = i + 1; j < nodes.length; j++) {
+      var d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+      if (d < 160) { ctx.strokeStyle = 'rgba(217,105,15,' + ((1-d/160)*0.09) + ')'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke(); }
     }
-    nodes.forEach(n => {
-      const p = 0.5 + 0.5 * Math.sin(t * n.speed + n.phase);
+    nodes.forEach(function(n) {
+      var p = 0.5 + 0.5 * Math.sin(t * n.speed + n.phase);
       ctx.beginPath(); ctx.arc(n.x, n.y, 1.5 + p * 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(217,105,15,${0.15 + p * 0.22})`; ctx.fill();
+      ctx.fillStyle = 'rgba(217,105,15,' + (0.15 + p * 0.22) + ')'; ctx.fill();
     });
     if (!reduced) requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
 })();
-
-/* ===================================================
-   Contact forms
-   =================================================== */
-document.querySelectorAll('.contact-form').forEach(form => {
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const s = form.querySelector('.form-success');
-    if (s) { s.classList.add('visible'); setTimeout(() => s.classList.remove('visible'), 5000); }
-    form.reset();
-  });
-});
 
 /* ===================================================
    Init
