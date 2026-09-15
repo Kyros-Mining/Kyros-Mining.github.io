@@ -231,8 +231,10 @@ input,select,textarea{font-family:inherit}
 .offer-card h3{font-family:var(--font-d);font-size:1.35rem;font-weight:600}
 .offer-dek{font-size:1rem;color:var(--ink-dim);margin-bottom:1.6rem;padding-bottom:1.6rem;border-bottom:1px solid var(--line)}
 .project-status{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-m);font-size:.68rem;letter-spacing:.08em;color:var(--green);background:var(--green-bg);padding:.3rem .7rem;border-radius:99px;margin-bottom:.9rem;width:fit-content}
+.project-status.planning{color:var(--orange-dk);background:var(--orange-bg)}
+.project-status.planning .pulse-dot{background:var(--orange-dk)}
 .project-dek{font-size:.92rem;color:var(--ink-dim);margin-bottom:1.3rem}
-.project-stats{display:flex;gap:1.6rem;flex-wrap:wrap;padding-top:1.1rem;border-top:1px solid var(--line);margin-top:auto}
+.project-stats{display:grid;grid-template-columns:repeat(3,1fr);column-gap:1rem;row-gap:1rem;padding-top:1.1rem;border-top:1px solid var(--line);margin-top:auto}
 .project-stat-val{display:block;font-family:var(--font-m);font-size:1.05rem;font-weight:600;color:var(--ink)}
 .project-stat-label{display:block;font-size:.7rem;color:var(--ink-faint);margin-top:.15rem}
 .offer-detail{display:flex;flex-direction:column;gap:1.2rem;margin-bottom:1.8rem;flex-grow:1}
@@ -338,7 +340,7 @@ input,select,textarea{font-family:inherit}
 .deal-spec-val{display:block;font-family:var(--font-m);font-size:.92rem;font-weight:600;color:var(--ink)}
 .hardware-deal-note{position:relative;z-index:1;font-size:.85rem;color:var(--ink-dim);line-height:1.55;margin-bottom:1.4rem}
 .hardware-deal .btn{position:relative;z-index:1}
-@media(max-width:640px){.hardware-deal-specs{grid-template-columns:repeat(2,1fr)}.hardware-deal{padding:1.4rem 1.3rem}}
+@media(max-width:640px){.hardware-deal-specs{grid-template-columns:repeat(2,1fr)}.hardware-deal{padding:1.4rem 1.3rem}.project-stats{grid-template-columns:repeat(2,1fr)}}
 .hardware-text{max-width:680px}
 .hardware-list{display:flex;flex-direction:column;gap:.8rem;margin:1.8rem 0 2.2rem}
 .hardware-list li{display:flex;align-items:flex-start;gap:.7rem;font-size:.95rem}
@@ -481,7 +483,7 @@ a.cc-value:hover{color:var(--orange-dk)}
         <span class="lang-sep">/</span>
         <span class="lang-opt" data-lang="en">EN</span>
       </button>
-      <a href="#kontakt" class="btn btn-primary btn-small" data-i18n="nav.cta">Kontakt</a>
+      <a href="#kontakt" class="btn btn-primary btn-small" data-i18n="nav.cta">Jetzt anfragen</a>
     </div>
     <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
   </div>
@@ -900,7 +902,7 @@ ausläuft — wir bieten einen direkten, planbaren Abnehmervertrag.</p>
  produzieren am Mittag oft mehr als das Netz aufnehmen kann. Kyros nimmt
  genau diesen Überschuss ab — als flexibler, sofort abschaltbarer 
 Verbraucher.</p>
-        <div class="energie-details open" id="pv-details">
+        <div class="energie-details" id="pv-details">
           <div class="energie-detail-row">
             <span class="energie-dl" data-i18n="energie.dl.char">Charakteristik</span>
             <p data-i18n="energie.pv.char">Tagesabhängig, Spitzenlast mittags. Mittagsschwemme ist die häufigste Ursache für negative Strompreise.</p>
@@ -914,7 +916,7 @@ Verbraucher.</p>
             <p data-i18n="energie.pv.min">Ab ca. 200 kW Anlagenleistung sinnvoll. Kleinere Anlagen auf Anfrage.</p>
           </div>
         </div>
-        <button class="energie-expand open" data-target="pv-details">
+        <button class="energie-expand" data-target="pv-details">
           <span data-i18n="energie.expand" data-i18n-orig="energie.expand">Details ausblenden</span>
           <svg class="expand-arrow" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
         </button>
@@ -1386,10 +1388,10 @@ schnelle Lieferung.</p>
             <h3>Kraftwerk Norwegen</h3>
           </div>
         </div>
-        <span class="project-status"><span class="pulse-dot" style="background:var(--green)"></span>In Betrieb</span>
-        <p class="project-dek">Wasserkraft-Partnerschaft im Norden Europas — stabile Erzeugung, ganzjährig planbar.</p>
+        <span class="project-status planning"><span class="pulse-dot"></span>In Planung</span>
+        <p class="project-dek">Wasserkraft-Partnerschaft im Aufbau — geplante Erzeugungskapazität im Norden Europas.</p>
         <div class="project-stats">
-          <div class="project-stat"><span class="project-stat-val">800 kW</span><span class="project-stat-label">Leistung</span></div>
+          <div class="project-stat"><span class="project-stat-val">800 kW</span><span class="project-stat-label">Geplante Leistung</span></div>
           <div class="project-stat"><span class="project-stat-val">Wasserkraft</span><span class="project-stat-label">Quelle</span></div>
           <div class="project-stat"><span class="project-stat-val">Norwegen</span><span class="project-stat-label">Standort</span></div>
         </div>
@@ -1579,7 +1581,7 @@ const i18n = {
   de: {
     "meta.title": "Kyros Mining | Krypto-Mining, Energieflexibilität & Netzstabilisierung",
     "meta.desc": "Kyros Mining: ASIC-Hosting (30 kW sofort verfügbar), Energie-Partnerschaften für PV, Wasserkraft, Wind und Biogas, Demand-Response und Investment.",
-    "nav.offers":"Angebot","nav.energie":"Energie","nav.process":"Projekte","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Kontakt","nav.cta":"Kontakt",
+    "nav.offers":"Angebot","nav.energie":"Energie","nav.process":"Projekte","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Kontakt","nav.cta":"Jetzt anfragen",
     "float.label":"30 kW verfügbar","float.cta":"Jetzt sichern",
     "hero.eyebrow":"LIVE NETZFREQUENZ-RESPONSIVES MINING",
     "hero.title1":"WIR MINEN","hero.title2":"MIT DEM NETZ,","hero.title3":"NICHT GEGEN ES",
@@ -1684,7 +1686,7 @@ const i18n = {
   en: {
     "meta.title":"Kyros Mining | Crypto Mining, Energy Flexibility & Grid Stabilization",
     "meta.desc":"Kyros Mining: ASIC hosting (30 kW available now), energy partnerships for PV, hydro, wind and biogas, demand response and investment.",
-    "nav.offers":"Offering","nav.energie":"Energy","nav.process":"Projects","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Contact","nav.cta":"Contact",
+    "nav.offers":"Offering","nav.energie":"Energy","nav.process":"Projects","nav.hardware":"Hardware","nav.faq":"FAQ","nav.contact":"Contact","nav.cta":"Get in touch",
     "float.label":"30 kW available","float.cta":"Reserve now",
     "hero.eyebrow":"LIVE GRID-FREQUENCY-RESPONSIVE MINING",
     "hero.title1":"WE MINE","hero.title2":"WITH THE GRID,","hero.title3":"NOT AGAINST IT",
@@ -1874,20 +1876,17 @@ try {
 } catch(e) { animateCapBar(); }
 
 /* ===================================================
-   Live frequency simulation
+   Live frequency — echte Netzfrequenz-API mit Fallback
    =================================================== */
 let freqValue = 49.98;
-let freqDir = 1;
+let freqLiveOK = false;
 const freqDisplayHero = document.getElementById('freqDisplay');
 const freqDisplayLarge = document.getElementById('freqDisplayLarge');
 const freqBarFill = document.getElementById('freqBarFill');
 const freqStatus = document.getElementById('freqStatus');
 
-function updateFreq() {
-  // random walk within ±0.15 Hz
-  freqDir = Math.random() > 0.5 ? 1 : -1;
-  const delta = (Math.random() * 0.03) * freqDir;
-  freqValue = Math.max(49.85, Math.min(50.15, freqValue + delta));
+function renderFreq(value) {
+  freqValue = value;
   const display = freqValue.toFixed(2);
   const isWarn = freqValue < 49.95;
   // hero small display
@@ -1908,7 +1907,37 @@ function updateFreq() {
     freqStatus.textContent = isWarn ? dict['grid.freqwarn'] : dict['grid.freqstatus'];
   }
 }
-setInterval(updateFreq, 2500);
+
+/* Versucht die echte europäische Netzfrequenz zu laden (netzfrequenz.info).
+   Schlägt der Abruf fehl (Netzwerk, CORS, Ausfall), läuft die simulierte
+   Anzeige unten unverändert weiter — die Seite bleibt so immer lebendig. */
+async function fetchLiveFreq() {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch('https://www.netzfrequenz.info/json/aktuell.json', { signal: controller.signal, cache: 'no-store' });
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error('bad response');
+    const data = await res.json();
+    const val = parseFloat(data.freq);
+    if (!isFinite(val)) throw new Error('bad value');
+    freqLiveOK = true;
+    renderFreq(val);
+  } catch (e) {
+    freqLiveOK = false;
+  }
+}
+
+function simulateFreqStep() {
+  if (freqLiveOK) return; // echte Daten kommen an, keine Simulation nötig
+  const dir = Math.random() > 0.5 ? 1 : -1;
+  const delta = (Math.random() * 0.03) * dir;
+  renderFreq(Math.max(49.85, Math.min(50.15, freqValue + delta)));
+}
+
+fetchLiveFreq();
+setInterval(fetchLiveFreq, 10000);
+setInterval(simulateFreqStep, 2500);
 
 /* ===================================================
    Live load simulation in hero
